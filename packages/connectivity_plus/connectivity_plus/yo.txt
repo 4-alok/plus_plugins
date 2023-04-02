@@ -1,0 +1,67 @@
+@startuml
+set namespaceSeparator ::
+
+class "connectivity_plus::src::connectivity_plus_web.dart::ConnectivityPlusWebPlugin" {
+  {static} +void registerWith()
+}
+
+"connectivity_plus_platform_interface::connectivity_plus_platform_interface.dart::ConnectivityPlatform" <|-- "connectivity_plus::src::connectivity_plus_web.dart::ConnectivityPlusWebPlugin"
+
+class "connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin" {
+  -NetworkInformation _networkInformation
+  -StreamController<ConnectivityResult>? _connectivityResultStreamController
+  -Stream<ConnectivityResult> _connectivityResultStream
+  -ConnectivityResult? _lastFallbackState
+  +Stream<ConnectivityResult> onConnectivityChanged
+  {static} +bool isSupported()
+  +Future<ConnectivityResult> checkConnectivity()
+  -Stream<ConnectivityResult> _webPseudoStream()
+}
+
+"connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin" o-- "dart::html::NetworkInformation"
+"connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin" o-- "dart::async::StreamController<ConnectivityResult>"
+"connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin" o-- "dart::async::Stream<ConnectivityResult>"
+"connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin" o-- "connectivity_plus_platform_interface::src::enums.dart::ConnectivityResult"
+"connectivity_plus::src::connectivity_plus_web.dart::ConnectivityPlusWebPlugin" <|-- "connectivity_plus::src::web::network_information_api_connectivity_plugin.dart::NetworkInformationApiConnectivityPlugin"
+
+class "connectivity_plus::src::web::dart_html_connectivity_plugin.dart::DartHtmlConnectivityPlugin" {
+  -StreamController<ConnectivityResult>? _connectivityResult
+  +Stream<ConnectivityResult> onConnectivityChanged
+  +Future<ConnectivityResult> checkConnectivity()
+}
+
+"connectivity_plus::src::web::dart_html_connectivity_plugin.dart::DartHtmlConnectivityPlugin" o-- "dart::async::StreamController<ConnectivityResult>"
+"connectivity_plus::src::web::dart_html_connectivity_plugin.dart::DartHtmlConnectivityPlugin" o-- "dart::async::Stream<ConnectivityResult>"
+"connectivity_plus::src::connectivity_plus_web.dart::ConnectivityPlusWebPlugin" <|-- "connectivity_plus::src::web::dart_html_connectivity_plugin.dart::DartHtmlConnectivityPlugin"
+
+class "connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin" {
+  -NetworkManagerClient? _client
+  -StreamController<ConnectivityResult>? _controller
+  +NetworkManagerClient Function() createClient
+  +Stream<ConnectivityResult> onConnectivityChanged
+  {static} +void registerWith()
+  +Future<ConnectivityResult> checkConnectivity()
+  -ConnectivityResult _getConnectivity()
+  -Future<void> _startListenConnectivity()
+  -void _addConnectivity()
+  -Future<void> _stopListenConnectivity()
+}
+
+"connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin" o-- "nm::src::network_manager_client.dart::NetworkManagerClient"
+"connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin" o-- "dart::async::StreamController<ConnectivityResult>"
+"connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin" o-- "connectivity_plus::src::connectivity_plus_linux.dart::NetworkManagerClient Function()"
+"connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin" o-- "dart::async::Stream<ConnectivityResult>"
+"connectivity_plus_platform_interface::connectivity_plus_platform_interface.dart::ConnectivityPlatform" <|-- "connectivity_plus::src::connectivity_plus_linux.dart::ConnectivityPlusLinuxPlugin"
+
+class "connectivity_plus::connectivity_plus.dart::Connectivity" {
+  {static} -Connectivity? _singleton
+  {static} -ConnectivityPlatform _platform
+  +Stream<ConnectivityResult> onConnectivityChanged
+  +Future<ConnectivityResult> checkConnectivity()
+}
+
+"connectivity_plus::connectivity_plus.dart::Connectivity" o-- "connectivity_plus::connectivity_plus.dart::Connectivity"
+"connectivity_plus::connectivity_plus.dart::Connectivity" o-- "connectivity_plus_platform_interface::connectivity_plus_platform_interface.dart::ConnectivityPlatform"
+"connectivity_plus::connectivity_plus.dart::Connectivity" o-- "dart::async::Stream<ConnectivityResult>"
+
+@enduml

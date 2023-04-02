@@ -15,15 +15,11 @@ void main() {
     setUp(() async {
       methodChannelDeviceInfo = MethodChannelDeviceInfo();
 
-      methodChannelDeviceInfo.channel
-          .setMockMethodCallHandler((MethodCall methodCall) async {
-        switch (methodCall.method) {
-          case 'getDeviceInfo':
-            return {'device_info': 'is_fake'};
-          default:
-            return null;
-        }
-      });
+      methodChannelDeviceInfo.channel.setMockMethodCallHandler(
+          (MethodCall methodCall) async => switch (methodCall.method) {
+                'getDeviceInfo' => {'device_info': 'is_fake'},
+                _ => null,
+              });
     });
 
     test('deviceInfo', () async {
